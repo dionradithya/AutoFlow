@@ -6,7 +6,11 @@ use GuzzleHttp\Exception\RequestException;
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 $router->group(['prefix' => 'api'], function () use ($router) {
-    // Endpoint untuk autentikasi
+
+
+    // ==================================================
+    // ENDPOINT AUTH
+    // ==================================================
     $router->post('/auth/register', function (Request $request) {
         $client = new Client();
         try {
@@ -54,7 +58,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         }
     });
 
-    // Endpoint untuk mobil
+    // ==================================================
+    // ENDPOINT CARS
+    // ==================================================
     $router->get('/mobils', function (Request $request) {
         $client = new Client();
         try {
@@ -222,7 +228,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     });
 
     // ==================================================
-    // ENDPOINT TRANSAKSI - TAMBAHAN UNTUK SERVICE TRANSAKSI
+    // ENDPOINT TRANSAKSI 
     // ==================================================
     
     // Endpoint untuk membeli (membutuhkan autentikasi)
@@ -240,7 +246,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 $headers['Authorization'] = $request->header('Authorization');
             }
             
-            $response = $client->post('http://localhost:8001/api/transaksi/beli', [
+            $response = $client->post('http://localhost:8003/api/transaksi/beli', [
                 'json' => $request->all(),
                 'headers' => $headers
             ]);
@@ -272,7 +278,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 $headers['Authorization'] = $request->header('Authorization');
             }
             
-            $response = $client->get('http://localhost:8001/api/transaksi/riwayat', [
+            $response = $client->get('http://localhost:8003/api/transaksi/riwayat', [
                 'headers' => $headers,
                 'query' => $request->all()
             ]);
@@ -298,7 +304,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 $router->post('/api/transaksi/notification', function (Request $request) {
     $client = new Client();
     try {
-        $response = $client->post('http://localhost:8001/api/transaksi/notification', [
+        $response = $client->post('http://localhost:8003/api/transaksi/notification', [
             'json' => $request->all(),
             'headers' => [
                 'Content-Type' => 'application/json',
