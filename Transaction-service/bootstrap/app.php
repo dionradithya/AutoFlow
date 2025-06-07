@@ -50,6 +50,10 @@ $app->middleware([
     // App\Http\Middleware\ExampleMiddleware::class // Contoh global middleware jika ada
 ]);
 
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class,
+]);
+
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\AuthMiddleware::class, // Daftarkan AuthMiddleware Anda
 ]);

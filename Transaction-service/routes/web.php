@@ -17,8 +17,10 @@ $router->get('/', function () use ($router) {
     return $router->app->version() . ' (Transaksi Service)';
 });
 
+
+
 // Group untuk API Transaksi yang dilindungi JWT
-$router->group(['prefix' => 'api/transaksi', 'middleware' => 'auth'], function () use ($router) {
+$router->group(['prefix' => 'api/transaksi', 'middleware' => 'auth','cors'], function () use ($router) {
     $router->post('beli', 'TransaksiController@beli');
     $router->get('riwayat', 'TransaksiController@riwayat');
 });
