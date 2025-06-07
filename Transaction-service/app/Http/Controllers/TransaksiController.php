@@ -30,106 +30,91 @@ class TransaksiController extends Controller
     }
 
     public function beli(Request $request)
-    {
-        Log::info('[TransaksiController@beli] Request diterima.');
+{
+    Log::info('[TransaksiController@beli] Request diterima:', $request->all());
 
-        // 1. Ambil objek 'auth' dari request (hasil decode JWT oleh middleware)
-        if (!property_exists($request, 'auth') || $request->auth === null) {
-            Log::error('[TransaksiController@beli] $request->auth tidak ditemukan atau null. Middleware mungkin gagal.');
-            return response()->json(['status' => 'error', 'message' => 'Data autentikasi tidak ditemukan (middleware error).'], 500);
-        }
-        $userAuth = $request->auth; // Ini adalah objek stdClass dari payload token
-        Log::info('[TransaksiController@beli] Isi $request->auth:', (array) $userAuth);
-
-        // 2. Ambil user_id dari klaim 'sub' di payload token
-        // JWT.IO Anda menunjukkan ada 'sub', jadi kita gunakan 'sub'.
-        if (!property_exists($userAuth, 'sub') || $userAuth->sub === null) {
-            Log::error('[TransaksiController@beli] Klaim "sub" (user_id) tidak ditemukan di $request->auth atau nilainya null.');
-            return response()->json(['status' => 'error', 'message' => 'User ID (sub claim) tidak ditemukan dalam token atau null.'], 400);
-        }
-        $userId = $userAuth->sub;
-        Log::info('[TransaksiController@beli] User ID dari token (sub claim): ' . $userId);
-
-        // 3. Validasi input request (mobil_id, amount, dll. TIDAK ADA user_id dari body)
-        $this->validate($request, [
-            'mobil_id' => 'required|integer',
-            'amount' => 'required|numeric|min:1',
-            'customer_details' => 'sometimes|array', // Opsional dari API Gateway
-            'item_details' => 'sometimes|array',   // Opsional dari API Gateway
-        ]);
-        Log::info('[TransaksiController@beli] Validasi input berhasil.');
-
-        // 4. Buat Order ID
-        $orderId = 'ORDER-' . Str::uuid()->toString();
-
-        // 5. Data untuk disimpan ke database
-        $dataToCreate = [
-            'order_id' => $orderId,
-            'user_id' => $userId, // Pastikan $userId tidak null di sini
-            'mobil_id' => $request->input('mobil_id'),
-            'amount' => $request->input('amount'),
-            'payment_status' => 'pending',
-        ];
-        Log::info('[TransaksiController@beli] Data untuk create transaksi:', $dataToCreate);
-
-        if (is_null($dataToCreate['user_id'])) {
-             Log::critical('[TransaksiController@beli] FATAL: user_id akan disimpan sebagai NULL. Menghentikan.');
-             return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan internal: user_id bernilai null sebelum disimpan.'], 500);
-        }
-
-        $transaksi = Transaksi::create($dataToCreate);
-        Log::info('[TransaksiController@beli] Transaksi berhasil dibuat di DB. Order ID: ' . $orderId);
-
-        // 6. Siapkan parameter untuk Midtrans
-        // Ambil detail customer dari token jika ada, atau dari request jika API Gateway meneruskannya
-        $customerDetails = $request->input('customer_details', [
-            'first_name' => $userAuth->name ?? 'Pengguna', // Asumsi ada 'name' di token
-            'email' => $userAuth->email ?? 'email@example.com', // Asumsi ada 'email' di token
-            'phone' => $userAuth->phone ?? '08123456789',      // Asumsi ada 'phone' di token
-        ]);
-
-        $itemDetails = $request->input('item_details', [[
-            'id' => (string) $request->input('mobil_id'),
-            'price' => (int) $request->input('amount'),
-            'quantity' => 1,
-            'name' => 'Pembelian Mobil ID: ' . $request->input('mobil_id'),
-        ]]);
-        
-        $params = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $transaksi->amount,
-            ],
-            'customer_details' => $customerDetails,
-            'item_details' => $itemDetails,
-        ];
-        Log::info('[TransaksiController@beli] Parameter untuk Midtrans:', $params);
-
-        try {
-            $snapToken = MidtransSnap::getSnapToken($params);
-            Log::info('[TransaksiController@beli] Snap token Midtrans berhasil didapatkan.');
-
-            $transaksi->snap_token = $snapToken;
-            $transaksi->save();
-
-            return response()->json([
-                'status' => 'success',
-                'order_id' => $orderId,
-                'snap_token' => $snapToken,
-                'redirect_url' => MidtransSnap::getSnapUrl($params)
-            ]);
-
-        } catch (Exception $e) {
-            Log::error('[TransaksiController@beli] Error mendapatkan Snap Token Midtrans: ' . $e->getMessage(), ['params' => $params]);
-            $transaksi->payment_status = 'failed_to_initiate_payment';
-            $transaksi->payment_details = ['error_midtrans' => $e->getMessage()];
-            $transaksi->save();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal memulai pembayaran dengan Midtrans: ' . $e->getMessage()
-            ], 500);
-        }
+    // Authentication
+    if (!property_exists($request, 'auth') || $request->auth === null) {
+        Log::error('[TransaksiController@beli] $request->auth tidak ditemukan atau null.');
+        return response()->json(['status' => 'error', 'message' => 'Data autentikasi tidak ditemukan.'], 500);
     }
+    $userAuth = $request->auth;
+    Log::info('[TransaksiController@beli] Isi $request->auth:', (array) $userAuth);
+
+    if (!property_exists($userAuth, 'sub') || $userAuth->sub === null) {
+        Log::error('[TransaksiController@beli] Klaim "sub" (user_id) tidak ditemukan.');
+        return response()->json(['status' => 'error', 'message' => 'User ID tidak ditemukan.'], 400);
+    }
+    $userId = $userAuth->sub;
+    Log::info('[TransaksiController@beli] User ID: ' . $userId);
+
+    // Validation
+    $validated = $this->validate($request, [
+        'mobil_id' => 'required|integer',
+        'amount' => 'required|integer|min:1000',
+        'customer_details' => 'sometimes|array',
+        'item_details' => 'sometimes|array',
+    ]);
+
+    // Create Order ID
+    $orderId = 'ORDER-' . Str::uuid()->toString();
+
+    // Database Transaction
+    $dataToCreate = [
+        'order_id' => $orderId,
+        'user_id' => $userId,
+        'mobil_id' => $validated['mobil_id'],
+        'amount' => $validated['amount'],
+        'payment_status' => 'pending',
+    ];
+    Log::info('[TransaksiController@beli] Data untuk create transaksi:', $dataToCreate);
+
+    $transaksi = Transaksi::create($dataToCreate);
+    Log::info('[TransaksiController@beli] Transaksi dibuat di DB. Order ID: ' . $orderId);
+
+    // Midtrans Parameters
+    $customerDetails = [
+        'first_name' => $userAuth->name ?? 'Pengguna',
+        'email' => $userAuth->email ?? 'test.customer@example.com',
+        'phone' => $userAuth->phone ?? '08123456789',
+    ];
+    $itemDetails = [[
+        'id' => (string) $validated['mobil_id'],
+        'price' => (int) $validated['amount'],
+        'quantity' => 1,
+        'name' => 'Pembelian Mobil ID: ' . $validated['mobil_id'],
+    ]];
+    $params = [
+        'transaction_details' => [
+            'order_id' => $orderId,
+            'gross_amount' => (int) $transaksi->amount,
+        ],
+        'customer_details' => $customerDetails,
+        'item_details' => $itemDetails,
+    ];
+    Log::info('[TransaksiController@beli] Parameter untuk Midtrans:', $params);
+
+    try {
+        $snapToken = MidtransSnap::getSnapToken($params);
+        Log::info('[TransaksiController@beli] Snap token: ' . $snapToken);
+
+        $transaksi->snap_token = $snapToken;
+        $transaksi->save();
+
+        return response()->json([
+            'status' => 'success',
+            'order_id' => $orderId,
+            'snap_token' => $snapToken,
+            'redirect_url' => "https://app.sandbox.midtrans.com/snap/v4/redirection/{$snapToken}"
+        ]);
+    } catch (\Exception $e) {
+        Log::error('[TransaksiController@beli] Midtrans error: ' . $e->getMessage(), ['params' => $params]);
+        $transaksi->payment_status = 'failed_to_initiate_payment';
+        $transaksi->payment_details = ['error_midtrans' => $e->getMessage()];
+        $transaksi->save();
+        return response()->json(['status' => 'error', 'message' => 'Gagal memulai pembayaran: ' . $e->getMessage()], 500);
+    }
+}
 
     public function riwayat(Request $request)
     {
