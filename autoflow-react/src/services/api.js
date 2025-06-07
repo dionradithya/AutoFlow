@@ -42,16 +42,40 @@ export const createCar = (data) => {
 };
 
 export const updateCar = (id, data) => {
-  const formData = new FormData();
-  Object.keys(data).forEach((key) => {
-    if (key === 'gambar' && data[key]) {
-      formData.append(key, data[key], data[key].name);
-    } else if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
-      formData.append(key, data[key]);
-    }
-  });
-  return api.put(`/mobils/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+  console.log('updateCar called with:', { id, data });
+  
+  if (data.gambar && data.gambar instanceof File) {
+    const formData = new FormData();
+    
+    formData.append('nama', data.nama || '');
+    formData.append('merk', data.merk || '');
+    formData.append('amount', data.amount || '');
+    formData.append('deskripsi', data.deskripsi || '');
+    formData.append('gambar', data.gambar);
+    formData.append('_method', 'PUT');
+    
+    return api.post(`/mobils/${id}`, formData, {
+      headers: { 
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+      },
+    });
+  } 
+  
+  const jsonData = {};
+  
+  if (data.nama !== undefined && data.nama !== null) jsonData.nama = data.nama;
+  if (data.merk !== undefined && data.merk !== null) jsonData.merk = data.merk;
+  if (data.amount !== undefined && data.amount !== null) jsonData.amount = data.amount;
+  if (data.deskripsi !== undefined && data.deskripsi !== null) jsonData.deskripsi = data.deskripsi;
+  
+  console.log('Sending JSON payload:', JSON.stringify(jsonData, null, 2));
+  
+  return api.put(`/mobils/${id}`, jsonData, {
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
   });
 };
 
