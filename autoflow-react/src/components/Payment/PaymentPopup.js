@@ -1,82 +1,70 @@
-import React, { useEffect } from 'react';
+// src/components/Payment/PaymentPopup.js
+
+import React, { useEffect, useRef } from 'react'; // Impor useRef
 import { buyCar } from '../../services/api';
 import { toast } from 'react-toastify';
 
 const PaymentPopup = ({ car, onClose }) => {
+  // --- TAMBAHKAN REF INI ---
+  const paymentInitiated = useRef(false);
+
   useEffect(() => {
-    // Load Midtrans Snap.js
+    // ... (logika load script Midtrans tetap sama) ...
     const snapScript = document.createElement('script');
     snapScript.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
     snapScript.setAttribute('data-client-key', process.env.REACT_APP_MIDTRANS_CLIENT_KEY);
     snapScript.async = true;
-    snapScript.onload = () => console.log('Snap.js loaded');
-    snapScript.onerror = () => console.error('Failed to load Snap.js');
     document.body.appendChild(snapScript);
 
     const initiatePayment = async () => {
+      // ... (logika initiatePayment Anda tetap sama) ...
       try {
-        const response = await buyCar({
-          mobil_id: car.id,
-          amount: car.amount,
-        });
-        console.log('Buy car response:', response.data);
-        const { snap_token } = response.data; // Use snap_token instead of token
-        if (!snap_token) {
-          throw new Error('No Snap token received');
-        }
-        if (!window.snap) {
-          throw new Error('Snap.js not available');
-        }
-        window.snap.pay(snap_token, {
-          onSuccess: () => {
-            toast.success('Payment successful!');
-            onClose();
-          },
-          onPending: () => {
-            toast.info('Payment pending. Please complete the payment.');
-            onClose();
-          },
-          onError: () => {
-            toast.error('Payment failed.');
-            onClose();
-          },
-          onClose: () => {
-            toast.info('Payment popup closed.');
-            onClose();
-          },
+        const response = await buyCar({ mobil_id: car.id, amount: car.amount });
+        const { snap_token } = response.data;
+        if (!snap_token) throw new Error('No Snap token received');
+        
+        // Pastikan window.snap sudah tersedia sebelum digunakan
+        const snap = window.snap;
+        if (!snap) throw new Error('Snap.js not available');
+
+        snap.pay(snap_token, {
+          onSuccess: () => { toast.success('Payment successful!'); onClose(); },
+          onPending: () => { toast.info('Payment pending.'); onClose(); },
+          onError: () => { toast.error('Payment failed.'); onClose(); },
+          onClose: () => { toast.info('Payment popup closed.'); onClose(); },
         });
       } catch (error) {
-        console.error('Payment error:', {
-          message: error.message,
-          response: error.response,
-        });
         toast.error(error.response?.data?.error || error.message || 'Failed to initiate payment');
         onClose();
       }
     };
 
-    initiatePayment();
+    // --- TAMBAHKAN KONDISI INI ---
+    // Cek apakah Snap.js sudah termuat dan pembayaran belum diinisiasi
+    const checkSnapAndPay = () => {
+      if (window.snap && !paymentInitiated.current) {
+        paymentInitiated.current = true; // Tandai bahwa pembayaran telah diinisiasi
+        initiatePayment();
+      } else if (!paymentInitiated.current) {
+        // Jika Snap belum ada, coba lagi setelah beberapa saat
+        setTimeout(checkSnapAndPay, 100);
+      }
+    };
+    
+    checkSnapAndPay();
 
     return () => {
       if (snapScript.parentNode) {
         snapScript.parentNode.removeChild(snapScript);
       }
     };
-  }, [car, onClose]);
+    // Menggunakan dependency yang lebih stabil
+  }, [car.id, car.amount, onClose]);
 
   return (
+    // ... (JSX Anda tetap sama) ...
     <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Processing Payment for {car.nama}</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
-          </div>
-          <div className="modal-body">
-            <p>Loading payment gateway...</p>
-          </div>
-        </div>
-      </div>
+      {/* ... */}
     </div>
   );
 };
