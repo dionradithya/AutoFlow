@@ -136,53 +136,65 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('/mobils/{mobil_id}', function (Request $request, $mobil_id) {
         $client = new Client();
         try {
-            // Cek apakah ada file upload
             $hasFile = $request->hasFile('gambar');
             
             if ($hasFile) {
-                // Jika ada file, gunakan multipart dengan method override
-                $multipart = [
-                    ['name' => '_method', 'contents' => 'PUT'] // Method override
-                ];
+                $multipart = [];
                 
-                $fields = ['nama', 'merk', 'amount', 'deskripsi'];
-                foreach ($fields as $field) {
-                    $value = $request->input($field);
-                    if ($value !== null && $value !== '') {
+                $multipart[] = ['name' => '_method', 'contents' => 'PUT'];
+                
+                $fieldsToConsider = ['nama', 'merk', 'amount', 'deskripsi'];
+                $hasFields = false;
+                
+                foreach ($fieldsToConsider as $field) {
+                    if ($request->has($field) && $request->input($field) !== null) {
                         $multipart[] = [
                             'name' => $field,
-                            'contents' => (string)$value
+                            'contents' => (string)$request->input($field)
                         ];
+                        $hasFields = true;
                     }
                 }
-
-                $file = $request->file('gambar');
-                if ($file->isValid()) {
-                    $multipart[] = [
-                        'name' => 'gambar',
-                        'contents' => fopen($file->getPathname(), 'r'),
-                        'filename' => $file->getClientOriginalName(),
-                        'headers' => [
-                            'Content-Type' => $file->getClientMimeType()
-                        ]
-                    ];
+                
+                // Handle file upload
+                if ($request->hasFile('gambar')) {
+                    $file = $request->file('gambar');
+                    if ($file->isValid()) {
+                        $multipart[] = [
+                            'name' => 'gambar',
+                            'contents' => fopen($file->getPathname(), 'r'),
+                            'filename' => $file->getClientOriginalName(),
+                            'headers' => ['Content-Type' => $file->getClientMimeType()]
+                        ];
+                        $hasFields = true;
+                    } else {
+                        return response()->json([
+                            'error' => 'Invalid file upload',
+                            'file_error' => $file->getError()
+                        ], 422);
+                    }
                 }
-
-                // Gunakan POST dengan method override
+                
+                if (!$hasFields) {
+                    return response()->json(['error' => 'At least one field or file is required'], 422);
+                }
+                
                 $response = $client->post("http://localhost:8002/mobils/{$mobil_id}", [
-                    'multipart' => $multipart
+                    'multipart' => $multipart,
+                    'headers' => [
+                        'Accept' => 'application/json'
+                    ]
                 ]);
                 
             } else {
-                // Jika tidak ada file, gunakan JSON
-                $data = array_filter($request->only(['nama', 'merk', 'amount', 'deskripsi']), function($value) {
-                    return $value !== null && $value !== '';
-                });
+                // Handling tanpa file (JSON)
+                $data = $request->only(['nama', 'merk', 'amount', 'deskripsi']);
+                $data = array_filter($data, fn($value) => $value !== null && $value !== '');
                 
                 if (empty($data)) {
-                    return response()->json(['error' => 'No valid data provided for update'], 422);
+                    return response()->json(['error' => 'At least one field is required'], 422);
                 }
-
+                
                 $response = $client->put("http://localhost:8002/mobils/{$mobil_id}", [
                     'json' => $data,
                     'headers' => [
@@ -191,25 +203,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                     ]
                 ]);
             }
-
+            
             return response($response->getBody(), $response->getStatusCode())
                 ->header('Content-Type', 'application/json');
                 
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 500;
-            $errorMessage = $e->hasResponse() ? json_decode($e->getResponse()->getBody(), true) : ['error' => 'Mobil service error'];
-            
-            // Log error untuk debugging
-            if (env('APP_DEBUG', false)) {
-                $debugInfo = [
-                    'mobil_id' => $mobil_id,
-                    'request_data' => $request->all(),
-                    'error' => $errorMessage,
-                    'status_code' => $statusCode
-                ];
-                file_put_contents(storage_path('logs/api_gateway_error.log'), json_encode($debugInfo, JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
-            }
-            
+            $errorBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            $errorMessage = $errorBody ? json_decode($errorBody, true) : ['error' => 'Mobil service error'];
+                        
             return response()->json($errorMessage, $statusCode);
         }
     });
@@ -230,18 +232,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // ==================================================
     // ENDPOINT TRANSAKSI 
     // ==================================================
-    
-    // Endpoint untuk membeli (membutuhkan autentikasi)
     $router->post('/transaksi/beli', function (Request $request) {
         $client = new Client();
         try {
-            // Pastikan header Authorization diteruskan ke service transaksi
             $headers = [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
             ];
             
-            // Teruskan Authorization header jika ada
             if ($request->header('Authorization')) {
                 $headers['Authorization'] = $request->header('Authorization');
             }
@@ -268,12 +266,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/transaksi/riwayat', function (Request $request) {
         $client = new Client();
         try {
-            // Pastikan header Authorization diteruskan ke service transaksi
             $headers = [
                 'Accept' => 'application/json'
             ];
             
-            // Teruskan Authorization header jika ada
             if ($request->header('Authorization')) {
                 $headers['Authorization'] = $request->header('Authorization');
             }
@@ -300,7 +296,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 // ==================================================
 // ENDPOINT KHUSUS UNTUK MIDTRANS NOTIFICATION
 // ==================================================
-// Endpoint ini dipanggil langsung oleh Midtrans, tidak melalui autentikasi
 $router->post('/api/transaksi/notification', function (Request $request) {
     $client = new Client();
     try {
