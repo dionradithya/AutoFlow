@@ -144,15 +144,21 @@ class TransaksiController extends Controller
 
     public function handleNotification(Request $request)
     {
-        Log::info('[TransaksiController@handleNotification] Notifikasi Midtrans diterima:', $request->all());
-        $notif = null; // Inisialisasi
-        try {
-            // Parameter true untuk menginstruksikan agar mengambil dari php://input dan melakukan sanitasi
-            $notif = new \Midtrans\Notification();
-        } catch (Exception $e) {
-            Log::error('[TransaksiController@handleNotification] Error membuat objek MidtransNotification: ' . $e->getMessage(), $request->all());
-            return response()->json(['status' => 'error', 'message' => 'Invalid notification object from Midtrans.'], 400);
-        }
+        
+    Log::info('[TransaksiController@handleNotification] Notifikasi Midtrans diterima:', $request->all());
+    $notif = null; 
+    try {
+        // AMBIL RAW BODY DARI REQUEST
+        // $rawNotificationBody = $request->getContent();
+        
+        // BERIKAN RAW BODY KE KONSTRUKTOR MIDTRANS
+        // (Bukan array dari $request->all() dan bukan juga kosong)
+        $notif = new \Midtrans\Notification(); 
+        
+    } catch (Exception $e) {
+        Log::error('[TransaksiController@handleNotification] Error membuat objek MidtransNotification: ' . $e->getMessage(), $request->all());
+        return response()->json(['status' => 'error', 'message' => 'Invalid notification object from Midtrans.'], 400);
+    }
 
         if (!$notif) {
              Log::error('[TransaksiController@handleNotification] Objek notifikasi Midtrans null setelah instansiasi.');
