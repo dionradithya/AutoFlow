@@ -1,0 +1,53 @@
+/* Menggunakan variabel warna dari HomePage.css agar tema konsisten */
+:root {
+  --text-primary: #f0e9e4;
+  --accent-color: #4a413c;
+}
+
+.custom-navbar {
+  position: absolute; /* KUNCI UTAMA: Membuat navbar melayang di atas konten lain */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100; /* Memastikan navbar selalu di paling depan */
+  padding: 1rem 21rem; /* Jarak dari tepi layar */
+  background: transparent; /* Menghilangkan background solid */
+  transition: background-color 0.3s ease;
+}
+
+/* Styling untuk "pil" yang membungkus brand dan link */
+.brand-pill, .links-pill {
+  background-color: var(--accent-color);
+  border-radius: 50px; /* Membuat bentuk pil */
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+}
+
+.brand-pill a {
+  font-weight: bold !important;
+}
+
+.links-pill .nav-item {
+  margin: 0 0.5rem; /* Jarak antar link navigasi */
+}
+
+/* Styling khusus untuk link di dalam pil */
+.links-pill .nav-link {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem !important; /* Mengurangi padding default bootstrap */
+  transition: color 0.2s ease-in-out;
+}
+
+.links-pill .nav-link:hover {
+  color: #fff !important; /* Sedikit lebih terang saat hover */
+}
+
+/* Styling untuk tombol logout agar terlihat seperti link biasa */
+.links-pill .btn {
+  background: none;
+  border: none;
+  font-size: 1rem; /* Samakan dengan .nav-link */
+}
