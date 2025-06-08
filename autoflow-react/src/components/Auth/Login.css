@@ -1,0 +1,54 @@
+.login-container {
+  /* Mengatur gambar background */
+  background-image: url('../../assets/image/bglogin02.jpg');
+  
+  /* Membuat gambar menutupi seluruh area */
+  background-size: cover;
+  
+  /* Posisi gambar di tengah */
+  background-position: center;
+  
+  /* Mencegah gambar berulang */
+  background-repeat: no-repeat;
+  
+  /* Memastikan container mengisi seluruh tinggi layar */
+  min-height: 100vh;
+  
+  /* Menggunakan Flexbox untuk menengahkan form login */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form-wrapper {
+  /* Memberi background pada form agar teks mudah dibaca */
+  background-color: rgba(255, 255, 255, 0.9); /* Putih dengan sedikit transparan */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-width: 450px; /* Lebar maksimum form */
+}
+
+/* Menargetkan tag h2 di dalam bungkus form */
+.login-form-wrapper h2 {
+  color: #2c2c2c; /* Ganti dengan kode warna yang Anda inginkan */
+}
+
+/* Menargetkan label form */
+.login-form-wrapper .form-label {
+  color: #555; /* Ganti dengan kode warna yang Anda inginkan */
+}
+
+/* Menargetkan tombol login */
+.login-form-wrapper .btn-primary {
+  color: #ffffff; /* Warna teks tombol */
+  background-color: #9c856a; /* Warna latar belakang tombol */
+  border-color: #9c856a; /* Warna border tombol */
+}
+
+/* (Opsional) Mengubah warna tombol saat di-hover */
+.login-form-wrapper .btn-primary:hover {
+    background-color: #795930;
+    border-color: #795930;
+}
