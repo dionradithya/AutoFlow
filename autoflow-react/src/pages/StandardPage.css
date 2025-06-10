@@ -328,3 +328,53 @@
   /* Kita bisa membuat efek hover lebih kentara jika mau */
   background-color: #4a413c;
 }
+
+/* Tambahkan di akhir file StandardPage.css */
+
+/* Penataan untuk pesan error di bawah input form */
+.form-error-text {
+  color: #ff6b6b; /* Warna merah yang tidak terlalu mencolok */
+  font-size: 0.875rem; /* Ukuran font lebih kecil */
+  margin-top: 0.25rem; /* Jarak dari input di atasnya */
+}
+
+/* (Opsional) Memberi border merah pada input yang error */
+/* Bootstrap sudah punya kelas 'is-invalid' untuk ini, jadi kita bisa manfaatkan */
+.form-control.is-invalid {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 107, 0.25);
+}
+
+/* =============================================== */
+/* === BACKGROUND FULLSCREEN UNTUK REGISTRASI  === */
+/* =============================================== */
+.page-container.register-background {
+  /* 1. Timpa properti yang membatasi ukuran dari .page-container */
+  max-width: none;
+  padding: 0;
+  margin: 0;
+
+  /* 2. Atur background agar fullscreen */
+  background-image: url('../assets/image/bglogin02.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+
+  /* 3. Gunakan flexbox untuk menengahkan form registrasi */
+  display: flex;
+  flex-direction: column; /* Membuat item (judul dan form) tersusun ke bawah */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 4. Atur kembali style untuk judul dan kartu form di dalam background ini */
+.register-background .page-title {
+  color: var(--text-primary); /* Pastikan warna teks kontras */
+}
+
+.register-background .profile-card {
+  background-color: rgba(49, 44, 41, 0.95); /* --card-bg dengan transparansi */
+  width: 100%;
+  /* Anda bisa mengatur max-width lagi di sini agar form tidak terlalu lebar */
+  max-width: 600px; 
+}

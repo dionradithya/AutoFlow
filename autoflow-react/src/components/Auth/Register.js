@@ -4,6 +4,7 @@ import { register } from '../../services/api';
 import { toast } from 'react-toastify';
 import '../../pages/StandardPage.css'; // <-- 1. Impor CSS bersama
 
+
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const navigate = useNavigate();
@@ -19,13 +20,36 @@ const Register = () => {
       toast.success('Registration successful! Please login.');
       navigate('/login');
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Registration failed');
+      // --- PERUBAHAN UTAMA DI SINI ---
+      // Cek jika ada response error dan body-nya (data)
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Cek jika errorData adalah objek (bukan string atau null)
+        if (typeof errorData === 'object' && errorData !== null) {
+          // Loop melalui setiap key di dalam objek error (misal: "email", "password")
+          for (const key in errorData) {
+            // Pastikan value-nya adalah array dan tidak kosong
+            if (Array.isArray(errorData[key]) && errorData[key].length > 0) {
+              // Tampilkan pesan error pertama untuk key tersebut
+              toast.error(errorData[key][0]);
+            }
+          }
+        } else {
+          // Fallback jika response.data bukan objek (misal: hanya string "Unauthorized")
+          toast.error(errorData.message || 'An unknown error occurred.');
+        }
+      } else {
+        // Fallback untuk error jaringan atau error tak terduga lainnya
+        toast.error('Registration failed. Please try again.');
+      }
+      // --- AKHIR PERUBAHAN ---
     }
   };
 
   return (
     // 2. Gunakan 'page-container' sebagai pembungkus utama
-    <div className="page-container">
+    <div className="page-container register-background">
       <h2 className="page-title">Create Your Account</h2>
       
       {/* 3. Bungkus form dengan 'profile-card' agar senada dengan halaman Profile */}
@@ -62,6 +86,7 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              minLength="6"
             />
           </div>
           <button type="submit" className="btn btn-primary w-100 mt-3">

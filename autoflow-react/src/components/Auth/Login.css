@@ -22,7 +22,7 @@
 
 .login-form-wrapper {
   /* Memberi background pada form agar teks mudah dibaca */
-  background-color: rgba(255, 255, 255, 0.9); /* Putih dengan sedikit transparan */
+  background-color: rgba(49, 44, 41, 0.95); /* Putih dengan sedikit transparan */
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
@@ -32,12 +32,12 @@
 
 /* Menargetkan tag h2 di dalam bungkus form */
 .login-form-wrapper h2 {
-  color: #2c2c2c; /* Ganti dengan kode warna yang Anda inginkan */
+  color: #f0e9e4; /* Ganti dengan kode warna yang Anda inginkan */
 }
 
 /* Menargetkan label form */
 .login-form-wrapper .form-label {
-  color: #555; /* Ganti dengan kode warna yang Anda inginkan */
+  color: #f0e9e4; /* Ganti dengan kode warna yang Anda inginkan */
 }
 
 /* Menargetkan tombol login */
