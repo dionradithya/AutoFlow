@@ -21,8 +21,20 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 ->header('Content-Type', 'application/json');
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 500;
-            $errorMessage = $e->hasResponse() ? $e->getResponse()->getBody() : ['error' => 'Authentication service error'];
-            return response()->json($errorMessage, $statusCode);
+            if ($e->hasResponse()) {
+                // Ambil response error dari Auth-service
+                $response = $e->getResponse();
+                $statusCode = $response->getStatusCode();
+
+                // Teruskan response error (termasuk body JSON-nya) ke frontend
+                 $errorBody = json_decode($response->getBody()->getContents(), true);
+
+                 return response()->json($errorBody, $statusCode);
+            }
+            
+            // Fallback jika Auth-service tidak bisa dihubungi sama sekali
+            return response()->json(['error' => 'Authentication service is unavailable'], 503);
+            // --- AKHIR PERUBAHAN ---
         }
     });
 

@@ -25,6 +25,30 @@ $router->group(['prefix' => 'mobils'], function () use ($router) {
     $router->delete('/{mobil_id}', 'MobilController@destroy');
 });
 
+
+$router->get('/mobils', 'MobilController@index');
+$router->post('/mobils', 'MobilController@store');
+$router->get('/mobils/{mobil_id}', 'MobilController@show');
+$router->put('/mobils/{mobil_id}', 'MobilController@update');
+$router->delete('/mobils/{mobil_id}', 'MobilController@destroy');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // $router->group(['middleware' => 'auth'], function () use ($router) {
 //     $router->get('/mobils', 'MobilController@index');
 //     $router->post('/mobils', 'MobilController@store');
@@ -32,9 +56,3 @@ $router->group(['prefix' => 'mobils'], function () use ($router) {
 //     $router->put('/mobils/{mobil_id}', 'MobilController@update');
 //     $router->delete('/mobils/{mobil_id}', 'MobilController@destroy');
 // });
-
-$router->get('/mobils', 'MobilController@index');
-$router->post('/mobils', 'MobilController@store');
-$router->get('/mobils/{mobil_id}', 'MobilController@show');
-$router->put('/mobils/{mobil_id}', 'MobilController@update');
-$router->delete('/mobils/{mobil_id}', 'MobilController@destroy');

@@ -129,7 +129,7 @@ const TransactionHistory = () => {
                             <tr>
                                 <th>Car Name</th>
                                 <th>Brand</th>
-                                <th>Amount</th>
+                                <th>Price</th>
                                 <th>Status</th>
                                 <th>Date</th>
                             </tr>

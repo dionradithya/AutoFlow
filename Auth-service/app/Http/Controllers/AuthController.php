@@ -13,11 +13,20 @@ class AuthController extends BaseController
 {
     public function register(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
-        ]);
+        try {
+            $this->validate($request, [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6'
+            ]);
+        } catch (ValidationException $e) {
+            // Kembalikan response JSON yang lebih terstruktur
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $user = User::create([
             'name' => $request->name,
