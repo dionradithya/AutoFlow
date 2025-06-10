@@ -1,0 +1,380 @@
+/* =============================================== */
+/* PALET WARNA (Sama seperti HomePage)             */
+/* =============================================== */
+:root {
+  --bg-main: #1a1614;
+  --panel-bg: #3e3834;
+  --card-bg: #312c29;
+  --accent-color: #4a413c;
+  --text-primary: #f0e9e4;
+  --text-secondary: #b0a8a4;
+  --border-color: #5a514c;
+}
+
+/* =============================================== */
+/* === LAYOUT HALAMAN STANDAR (Profile, Transaksi) */
+/* =============================================== */
+.page-container {
+  /* Beri padding atas agar konten tidak tertutup navbar yang 'absolute' */
+  padding: 120px 2rem 4rem 2rem; 
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* =============================================== */
+/* ============ STYLING KARTU PROFIL ============= */
+/* =============================================== */
+.profile-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 2.5rem;
+  color: var(--text-primary);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.profile-card .card-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.profile-card .card-text {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.profile-card .card-text strong {
+  color: var(--text-primary);
+}
+
+
+/* =============================================== */
+/* =========== STYLING TABEL TRANSAKSI =========== */
+/* =============================================== */
+.table-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 1.5rem;
+  overflow-x: auto; /* Agar tabel bisa di-scroll di layar kecil */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.themed-table {
+  width: 100%;
+  border-collapse: collapse; /* Menghilangkan spasi antar border */
+  color: var(--text-secondary);
+}
+
+.themed-table thead {
+  background-color: var(--accent-color);
+}
+
+.themed-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: bold;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+
+.themed-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.themed-table tbody tr:last-child {
+  border-bottom: none; /* Hilangkan border di baris terakhir */
+}
+
+.themed-table tbody tr:hover {
+  background-color: var(--panel-bg); /* Efek hover */
+}
+
+.themed-table td {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+}
+
+.themed-table td:first-child {
+    color: var(--text-primary); /* Buat teks di kolom pertama lebih menonjol */
+    font-weight: 500;
+}
+
+/* Styling untuk Loading Spinner */
+.loading-container {
+    padding-top: 120px;
+}
+.loading-container .spinner-border {
+    color: var(--text-primary);
+}
+.loading-container p {
+    color: var(--text-secondary);
+}
+
+/* =============================================== */
+/* ====== STYLING PROFIL BARU (Gaya Testimoni) ====== */
+/* =============================================== */
+
+/* Wrapper untuk kartu agar berada di tengah */
+.profile-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.testimonial-profile-card {
+  max-width: 400px;
+  width: 100%;
+  background-color: #f5f1ed; /* Warna dasar kartu (putih gading hangat) */
+  border-radius: 24px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Penting agar header tidak keluar dari border-radius */
+  position: relative;
+  text-align: center;
+}
+
+.card-header-s {
+  background-color: #e4b9a9; /* Warna pink/coklat muda untuk header */
+  height: 120px;
+}
+
+.profile-image-wrapper {
+  /* Trik untuk membuat gambar berada di tengah-tengah antara header dan content */
+  position: absolute;
+  top: 120px; /* Sama dengan tinggi .card-header-s */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: #fff; /* Memberi efek border putih */
+  padding: 6px; /* Jarak antara border dan gambar */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-content-s {
+  padding: 85px 2rem 2rem 2rem; /* Padding atas besar untuk memberi ruang bagi gambar */
+  color: #333; /* Warna teks gelap agar kontras dengan background terang */
+}
+
+.user-name-s {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.user-track-s {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #888;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Garis pemisah dengan titik di ujung */
+.divider-s {
+  position: relative;
+  height: 1px;
+  background-color: #ddd;
+  margin: 1.5rem auto;
+  width: 60%;
+}
+.divider-s::before, .divider-s::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  background-color: #ddd;
+  border-radius: 50%;
+}
+.divider-s::before {
+  left: -5px;
+}
+.divider-s::after {
+  right: -5px;
+}
+
+.user-bio-s {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+/* Tambahkan di akhir file StandardPage.css */
+
+.car-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+
+.car-detail-image-wrapper img {
+    width: 100%;
+    border-radius: 15px;
+    background-color: var(--card-bg);
+}
+
+.car-detail-info h3 {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.car-detail-info .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.car-detail-info .description {
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+/* =============================================== */
+/* ====== KUSTOMISASI TOMBOL UTAMA (PRIMARY) ======= */
+/* =============================================== */
+
+/* Ini akan menata semua tombol biru (btn-primary) di halaman */
+/* yang menggunakan StandardPage.css, seperti Register, dll. */
+
+.page-container .btn-primary {
+  color: #ffffff; /* Warna teks tombol (putih) */
+  background-color: var(--accent-color, #9c856a); /* Warna latar belakang dari tema kita */
+  border-color: var(--accent-color, #9c856a); /* Warna border yang sama */
+  
+  padding: 0.75rem; /* Membuat tombol sedikit lebih besar */
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 8px; /* Sudut yang tidak terlalu tumpul */
+  transition: all 0.3s ease;
+}
+
+.page-container .btn-primary:hover {
+  background-color: #795930; /* Warna yang lebih gelap saat hover */
+  border-color: #795930;
+  transform: translateY(-2px); /* Efek sedikit mengangkat saat hover */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Tambahkan di akhir file StandardPage.css */
+
+/* Penataan untuk pembungkus tombol di form */
+.form-buttons-container {
+  display: flex;
+  justify-content: flex-end; /* Posisi tombol di sebelah kanan */
+  gap: 1rem; /* Jarak antar tombol */
+}
+
+/* Penataan untuk Tombol Sekunder (Batal) */
+.page-container .btn-secondary {
+  background-color: #6c757d; /* Warna abu-abu */
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.page-container .btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+  transform: translateY(-2px);
+}
+
+/* Sedikit penyesuaian untuk tombol primary di dalam container ini */
+.form-buttons-container .btn-primary {
+    min-width: 150px; /* Beri lebar minimum agar seimbang */
+}
+
+/* Tambahkan di akhir file StandardPage.css */
+
+/* Penataan untuk baris tabel yang bisa diklik */
+.themed-table tbody tr.clickable-row:hover {
+  cursor: pointer;
+  /* Kita bisa membuat efek hover lebih kentara jika mau */
+  background-color: #4a413c;
+}
+
+/* Tambahkan di akhir file StandardPage.css */
+
+/* Penataan untuk pesan error di bawah input form */
+.form-error-text {
+  color: #ff6b6b; /* Warna merah yang tidak terlalu mencolok */
+  font-size: 0.875rem; /* Ukuran font lebih kecil */
+  margin-top: 0.25rem; /* Jarak dari input di atasnya */
+}
+
+/* (Opsional) Memberi border merah pada input yang error */
+/* Bootstrap sudah punya kelas 'is-invalid' untuk ini, jadi kita bisa manfaatkan */
+.form-control.is-invalid {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 107, 0.25);
+}
+
+/* =============================================== */
+/* === BACKGROUND FULLSCREEN UNTUK REGISTRASI  === */
+/* =============================================== */
+.page-container.register-background {
+  /* 1. Timpa properti yang membatasi ukuran dari .page-container */
+  max-width: none;
+  padding: 0;
+  margin: 0;
+
+  /* 2. Atur background agar fullscreen */
+  background-image: url('../assets/image/bglogin02.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+
+  /* 3. Gunakan flexbox untuk menengahkan form registrasi */
+  display: flex;
+  flex-direction: column; /* Membuat item (judul dan form) tersusun ke bawah */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 4. Atur kembali style untuk judul dan kartu form di dalam background ini */
+.register-background .page-title {
+  color: var(--text-primary); /* Pastikan warna teks kontras */
+}
+
+.register-background .profile-card {
+  background-color: rgba(49, 44, 41, 0.95); /* --card-bg dengan transparansi */
+  width: 100%;
+  /* Anda bisa mengatur max-width lagi di sini agar form tidak terlalu lebar */
+  max-width: 600px; 
+}

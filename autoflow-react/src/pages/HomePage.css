@@ -1,0 +1,237 @@
+/* =============================================== */
+/* PALET WARNA (Sesuai Desain)             */
+/* =============================================== */
+:root {
+  --bg-main: #1a1614;         /* Coklat/Hitam yang sangat gelap untuk background utama */
+  --panel-bg: #3e3834;        /* Coklat/Abu-abu untuk panel galeri mobil */
+  --card-bg: #312c29;         /* Coklat lebih gelap untuk kartu mobil */
+  --accent-color: #4a413c;    /* Coklat/Abu-abu untuk title 'Exclusive Offers' */
+  --text-primary: #f0e9e4;    /* Putih gading untuk teks utama */
+  --text-secondary: #b0a8a4;  /* Abu-abu hangat untuk teks sekunder */
+  --border-color: #5a514c;    /* Warna border yang hangat */
+}
+
+/* =============================================== */
+/* == STYLING GLOBAL (Taruh di App.css/index.css) */
+/* =============================================== */
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* =============================================== */
+/* ============== SLIDER STYLING ================= */
+/* =============================================== */
+.slider-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.slide-item {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  padding: 0 10px;
+}
+
+/* Menambahkan gradien overlay di atas dan bawah gambar slider */
+.slide-item::before, .slide-item::after {
+  content: '';
+  position: absolute;
+  left: 10px; /* Sesuaikan dengan padding slide-item */
+  right: 10px;
+  z-index: 1;
+  border-radius: 18px;
+}
+.slide-item::before {
+  top: 0;
+  height: 150px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+}
+.slide-item::after {
+  bottom: 0;
+  height: 150px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+
+.slider-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block; /* Mencegah spasi aneh di bawah gambar */
+}
+
+/* =============================================== */
+/* Kustomisasi Panah Navigasi Slider (Ukuran Baru) */
+/* =============================================== */
+.slick-arrow {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  /* Definisikan properti background di sini agar bisa di-inherit oleh :hover */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
+.slick-arrow:hover {
+  background-color: rgba(74, 65, 60, 0.95); /* Warna background saat hover */
+  /* Pastikan properti background lainnya tetap ada saat hover */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
+.slick-arrow.slick-prev {
+  left: 30px; 
+}
+.slick-arrow.slick-next {
+  right: 30px; 
+}
+
+/* Menghilangkan ikon panah default dari library */
+.slick-arrow:before {
+  content: '';
+  font-size: 0;
+}
+/* Mendefinisikan gambar panah spesifik untuk prev dan next */
+.slick-prev {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+}
+.slick-next {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* Membuat :hover lebih spesifik untuk prev dan next agar gambar tidak tertimpa */
+.slick-prev:hover {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+}
+.slick-next:hover {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* =============================================== */
+/* =========== OFFERS TITLE STYLING ============== */
+/* =============================================== */
+.offers-title-container {
+  text-align: center;
+  margin: 4rem 0;
+}
+.offers-title {
+  display: inline-block;
+  padding: 0.8rem 3rem;
+  background-color: var(--accent-color); /* Menggunakan warna dari palet */
+  border-radius: 50px;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin: 0;
+}
+
+/* =============================================== */
+/* PANEL & KARTU MOBIL STYLING            */
+/* =============================================== */
+.offers-panel {
+  background-color: var(--panel-bg); /* Latar belakang panel */
+  max-width: 1200px;
+  margin: 0 auto 4rem auto; /* Margin bawah agar tidak terlalu mepet */
+  padding: 1.5rem; /* Padding di dalam panel */
+  border-radius: 15px;
+}
+
+.add-car-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.car-card {
+  background-color: var(--card-bg); /* Latar belakang kartu */
+  border: 1px solid var(--border-color); /* Border yang serasi */
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.car-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+}
+
+.car-card .card-img-top {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.car-card .card-body {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.car-card .card-title {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.car-card .card-text {
+  color: var(--text-secondary); /* Menggunakan warna teks sekunder */
+  margin-bottom: 0.5rem;
+}
+
+.car-card .action-buttons {
+  margin-top: auto;
+}
+
+/* Tambahkan di akhir file HomePage.css */
+
+/* Kustomisasi warna tombol di kartu mobil */
+.car-card .btn-warning {
+    background-color: #0E4D4D; /* Warna kuning (Edit) */
+    border-color: #1C7272;
+    color: #ffffff;
+}
+
+.car-card .btn-warning:hover {
+    background-color: #195E5E;
+    border-color: #298383;
+}
+
+.car-card .btn-danger {
+    background-color: #4d0e0e; /* Warna merah (Delete) */
+    border-color: #721c1c;
+    color: #ffffff;
+}
+
+.car-card .btn-danger:hover {
+    background-color: #5e1919;
+    border-color: #832929;
+}
+
+.add-car-container .btn-success {
+    background-color: #3E4A3C;
+    border-color: #5e6b5b;
+}
+
+.add-car-container .btn-success:hover {
+    background-color: #5d6b5b;
+    border-color: #788675;
+}
